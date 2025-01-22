@@ -18,6 +18,8 @@ class BookingSystemTest {
     void setUp() {
         timeProvider = mock(TimeProvider.class);
         bookingSystem = new BookingSystem(timeProvider, roomRepository, notificationService);
+        roomRepository = mock(RoomRepository.class);
+        notificationService = mock(NotificationService.class);
     }
 
     @Test
@@ -51,5 +53,15 @@ class BookingSystemTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Kan inte boka tid i dåtid");
     }
+
+    @Test
+    void bookRoomShouldThrowExceptionWhenEndTimeIsBeforeStartTime() {
+        when(timeProvider.getCurrentTime()).thenReturn(LocalDateTime.now());
+        assertThatThrownBy(() ->
+                bookingSystem.bookRoom("roomId", LocalDateTime.now().plusHours(2), LocalDateTime.now().plusHours(1)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Sluttid måste vara efter starttid");
+    }
+
 
 }
