@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.*;
 
 class BookingSystemTest {
 
@@ -15,6 +16,7 @@ class BookingSystemTest {
 
     @BeforeEach
     void setUp() {
+        timeProvider = mock(TimeProvider.class);
         bookingSystem = new BookingSystem(timeProvider, roomRepository, notificationService);
     }
 
@@ -26,7 +28,7 @@ class BookingSystemTest {
                 .hasMessage("Bokning kräver giltiga start- och sluttider samt rum-id");
     }
     @Test
-    void bookRoom_shouldThrowException_whenEndTimeIsNull() {
+    void bookRoomShouldThrowExceptionWhenEndTimeIsNull() {
         assertThatThrownBy(() ->
                 bookingSystem.bookRoom("roomId", LocalDateTime.now().plusHours(1), null))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -34,10 +36,20 @@ class BookingSystemTest {
     }
 
     @Test
-    void bookRoom_shouldThrowException_whenRoomIdIsNull() {
+    void bookRoomShouldThrowExceptionWhenRoomIdIsNull() {
         assertThatThrownBy(() ->
                 bookingSystem.bookRoom(null, LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(2)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Bokning kräver giltiga start- och sluttider samt rum-id");
     }
+
+    @Test
+    void bookRoomShouldThrowExceptionWhenStartTimeIsInThePast() {
+        when(timeProvider.getCurrentTime()).thenReturn(LocalDateTime.now());
+        assertThatThrownBy(() ->
+                bookingSystem.bookRoom("roomId", LocalDateTime.now().minusHours(1), LocalDateTime.now().plusHours(1)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Kan inte boka tid i dåtid");
+    }
+
 }
