@@ -24,8 +24,9 @@ class BookingSystemTest {
         timeProvider = mock(TimeProvider.class);
         roomRepository = mock(RoomRepository.class);
         notificationService = mock(NotificationService.class);
-        bookingSystem = new BookingSystem(timeProvider, roomRepository, notificationService);
         room = mock(Room.class);
+        bookingSystem = new BookingSystem(timeProvider, roomRepository, notificationService);
+
     }
 
     @Test
@@ -87,6 +88,19 @@ class BookingSystemTest {
 
         boolean result = bookingSystem.bookRoom("roomId", LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(2));
         assertFalse(result);
+    }
+
+    @Test
+    void bookRoom_shouldReturnTrue_whenBookingIsSuccessful() throws NotificationException {
+        when(roomRepository.findById("roomId")).thenReturn(Optional.of(room));
+        when(room.isAvailable(any(), any())).thenReturn(true);
+        when(timeProvider.getCurrentTime()).thenReturn(LocalDateTime.now());
+
+        boolean result = bookingSystem.bookRoom("roomId", LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(2));
+        assertTrue(result);
+        verify(room).addBooking(any());
+        verify(roomRepository).save(room);
+        verify(notificationService).sendBookingConfirmation(any());
     }
 
 }
