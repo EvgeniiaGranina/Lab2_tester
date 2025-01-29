@@ -20,5 +20,11 @@ public class ShoppingCartTest {
         assertEquals(1, cart.getItemCount());
     }
 
+    @Test
+    public void testRemoveItem() {
+        cart.addItem("Nötkött", 1, 1.0);
+        cart.removeItem("Nötkött");
+        assertEquals(0, cart.getItemCount());
+    }
 
 }
