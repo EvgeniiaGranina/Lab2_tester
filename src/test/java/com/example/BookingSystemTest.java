@@ -5,9 +5,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
@@ -124,6 +126,18 @@ class BookingSystemTest {
                 bookingSystem.getAvailableRooms(LocalDateTime.now().plusDays(2), LocalDateTime.now().plusDays(1)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Sluttid måste vara efter starttid");
+    }
+
+    @Test
+    void getAvailableRooms_shouldReturnAvailableRooms() {
+        Room room1 = mock(Room.class);
+        Room room2 = mock(Room.class);
+        when(roomRepository.findAll()).thenReturn(List.of(room1, room2));
+        when(room1.isAvailable(any(), any())).thenReturn(true);
+        when(room2.isAvailable(any(), any())).thenReturn(false);
+
+        List<Room> availableRooms = bookingSystem.getAvailableRooms(LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(2));
+        assertThat(availableRooms).containsExactly(room1);
     }
 
 }
