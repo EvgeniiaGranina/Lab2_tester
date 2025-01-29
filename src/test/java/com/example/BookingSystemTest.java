@@ -103,4 +103,20 @@ class BookingSystemTest {
         verify(notificationService).sendBookingConfirmation(any());
     }
 
+    @Test
+    void getAvailableRooms_shouldThrowException_whenStartTimeIsNull() {
+        assertThatThrownBy(() ->
+                bookingSystem.getAvailableRooms(null, LocalDateTime.now().plusDays(1)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Måste ange både start- och sluttid");
+    }
+
+    @Test
+    void getAvailableRooms_shouldThrowException_whenEndTimeIsNull() {
+        assertThatThrownBy(() ->
+                bookingSystem.getAvailableRooms(LocalDateTime.now().plusDays(1), null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Måste ange både start- och sluttid");
+    }
+
 }
