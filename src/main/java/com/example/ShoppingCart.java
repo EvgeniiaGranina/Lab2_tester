@@ -30,4 +30,12 @@ public class ShoppingCart {
     public void removeItem(String name) {
         items.remove(name);
     }
+
+    public double calculateTotalPrice() {
+        double total = 0.0;
+        for (Item item : items.values()) {
+            total += item.getPrice() * item.getQuantity();
+        }
+        return total * (1 - discount);
+    }
 }
