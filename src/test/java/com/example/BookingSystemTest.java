@@ -118,5 +118,12 @@ class BookingSystemTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Måste ange både start- och sluttid");
     }
+    @Test
+    void getAvailableRooms_shouldThrowException_whenEndTimeIsBeforeStartTime() {
+        assertThatThrownBy(() ->
+                bookingSystem.getAvailableRooms(LocalDateTime.now().plusDays(2), LocalDateTime.now().plusDays(1)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Sluttid måste vara efter starttid");
+    }
 
 }
