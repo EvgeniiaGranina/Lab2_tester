@@ -155,4 +155,19 @@ class BookingSystemTest {
         assertThat(result).isFalse();
     }
 
+    @Test
+    void cancelBooking_shouldThrowException_whenBookingIsInThePast() {
+
+        Booking booking = mock(Booking.class);
+        when(roomRepository.findAll()).thenReturn(List.of(room));
+        when(room.hasBooking("bookingId")).thenReturn(true);
+        when(room.getBooking("bookingId")).thenReturn(booking);
+        when(booking.getStartTime()).thenReturn(LocalDateTime.now().minusDays(1));
+        when(timeProvider.getCurrentTime()).thenReturn(LocalDateTime.now());
+
+        assertThatThrownBy(() ->
+                bookingSystem.cancelBooking("bookingId"))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Kan inte avboka påbörjad eller avslutad bokning");
+    }
 }
