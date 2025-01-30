@@ -148,4 +148,11 @@ class BookingSystemTest {
                 .hasMessage("Boknings-id kan inte vara null");
     }
 
+    @Test
+    void cancelBooking_shouldReturnFalse_whenBookingDoesNotExist() {
+        when(roomRepository.findAll()).thenReturn(List.of());
+        boolean result = bookingSystem.cancelBooking("bookingId");
+        assertThat(result).isFalse();
+    }
+
 }
