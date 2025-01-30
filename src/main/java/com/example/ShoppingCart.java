@@ -38,4 +38,8 @@ public class ShoppingCart {
         }
         return total * (1 - discount);
     }
+
+    public void applyDiscount(double discount) {
+        this.discount = discount;
+    }
 }

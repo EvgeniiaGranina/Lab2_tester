@@ -34,4 +34,11 @@ public class ShoppingCartTest {
         assertEquals(39.5, cart.calculateTotalPrice());
     }
 
+    @Test
+    public void testApplyDiscount() {
+        cart.addItem("Apple", 2, 1.0);
+        cart.applyDiscount(0.1); // 10% discount
+        assertEquals(1.8, cart.calculateTotalPrice());
+    }
+
 }
