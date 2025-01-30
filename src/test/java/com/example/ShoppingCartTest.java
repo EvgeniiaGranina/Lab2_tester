@@ -36,9 +36,16 @@ public class ShoppingCartTest {
 
     @Test
     public void testApplyDiscount() {
-        cart.addItem("Apple", 2, 1.0);
+        cart.addItem("Falukorv", 2, 28.0);
         cart.applyDiscount(0.1); // 10% discount
-        assertEquals(1.8, cart.calculateTotalPrice());
+        assertEquals(50.4, cart.calculateTotalPrice());
+    }
+
+    @Test
+    public void testUpdateQuantity() {
+        cart.addItem("Lime", 2, 5.0);
+        cart.updateItemQuantity("Lime", 5);
+        assertEquals(5, cart.getItemQuantity("Lime"));
     }
 
 }

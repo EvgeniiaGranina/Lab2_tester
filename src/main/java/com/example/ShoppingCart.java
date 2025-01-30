@@ -42,4 +42,18 @@ public class ShoppingCart {
     public void applyDiscount(double discount) {
         this.discount = discount;
     }
+
+    public void updateItemQuantity(String name, int quantity) {
+        if (items.containsKey(name)) {
+            Item item = items.get(name);
+            item.setQuantity(quantity);
+        }
+    }
+
+    public int getItemQuantity(String name) {
+        if (items.containsKey(name)) {
+            return items.get(name).getQuantity();
+        }
+        return 0;
+    }
 }
